@@ -1,13 +1,9 @@
-let timerHour = 0
-let timerMin  = 0
-let timerSec  = 0
-
 let timerIntervalId = null
+let currentTime = null
+let accumulatedTime = 0
 
-const writeTimerDate = () => {
+const writeTimerDate = (now) => {
   const weekday = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"]
-
-  const now = new Date()
 
   const year  = now.getFullYear()
   const month = now.getMonth() + 1
@@ -24,12 +20,13 @@ const writeTimerDate = () => {
   document.querySelector(".timer-date").innerText = today
 }
 
-const writeTimerTime = (hour, min, sec) => {
-  const h = hour.toString().padStart(2, '0')
-  const m = min.toString().padStart(2, '0')
-  const s = sec.toString().padStart(2, '0')
+const writeTimerTime = (hour, min, sec, mill) => {
+  const h  = hour.toString().padStart(2, '0')
+  const m  = min.toString().padStart(2, '0')
+  const s  = sec.toString().padStart(2, '0')
+  const ms = mill.toString().padStart(3, '0')
 
-  const time = `${h}:${m}:${s}`
+  const time = `${h}:${m}:${s}.${ms}`
 
   document.querySelector(".timer-time").innerText = time
 }
@@ -37,22 +34,17 @@ const writeTimerTime = (hour, min, sec) => {
 const timerStart = () => {
   timerStop()
 
-  timerIntervalId = setInterval(timerCount, 1000)
+  currentTime = new Date()
+  timerIntervalId = setInterval(timerCount, 10)
 }
 
 const timerReset = () => {
   timerStop()
 
-  const hour = 0
-  const min  = 0
-  const sec  = 0
+  accumulatedTime = 0
 
-  timerHour = 0
-  timerMin  = 0
-  timerSec  = 0
-
-  writeTimerDate()
-  writeTimerTime(hour, min, sec)
+  writeTimerDate(new Date())
+  writeTimerTime(0, 0, 0, 0) 
 }
 
 const timerStop = () => {
@@ -60,28 +52,24 @@ const timerStop = () => {
     clearInterval(timerIntervalId)
   }
   timerIntervalId = null
+
+  if (currentTime) {
+    accumulatedTime += (new Date()) - currentTime
+  }
+  currentTime = null
 }
 
 const timerCount = () => {
-  timerSec += 1
-  if (timerSec >= 60) {
-    timerMin += 1
-    timerSec = 0
-  }
-  if (timerMin >= 60) {
-    timerHour += 1
-    timerMin = 0
-  }
-  if (timerHour >= 100) {
-    timerHour = 0
-  }
+  const now = new Date()
+  const diff = now - currentTime + accumulatedTime
 
-  const hour = timerHour
-  const min  = timerMin
-  const sec  = timerSec
+  const hour = Math.floor(diff / (60 * 60 * 1000))
+  const min  = Math.floor(diff % (60 * 60 * 1000) / (60 * 1000))
+  const sec  = Math.floor(diff % (60 * 1000) / 1000)
+  const mill = Math.floor(diff % 1000)
 
-  writeTimerDate()
-  writeTimerTime(hour, min, sec)
+  writeTimerDate(now)
+  writeTimerTime(hour, min, sec, mill)
 }
 
 document.getElementById('timer-start').addEventListener('click', timerStart)

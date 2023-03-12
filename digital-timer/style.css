@@ -1,7 +1,5 @@
-/* Google Fonts 読み込み */
 @import url("https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap");
 
-/* 全体を囲うコンテナー */
 .container {
   width: 100%;
   height: 100vh;
@@ -12,7 +10,6 @@
   text-align: center;
 }
 
-/* 時計の共通スタイル */
 .timer {
   font-family: 'Share Tech Mono', monospace;
   color: #daf6ff;
@@ -21,17 +18,14 @@
   text-align: center;
 }
 
-/* 日付のスタイル */
 .timer-date {
   font-size: 25px;
 }
 
-/* 時間のスタイル */
 .timer-time {
   font-size: 100px;
 }
 
-/* 文字サイズ調整 */
 @media screen and (max-width: 500px) {
   .timer-date {
     font-size: 5vw;
